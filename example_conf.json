@@ -1,5 +1,5 @@
 {
-	"decoder_key":  "<sky-box uuid from uPnP scan>",
-	"skyAddress": "<sky-box ip address from uPnP scan>",
-	"port": 49153
+  "decoder_key":  "<sky-box uuid from uPnP scan>",
+  "skyAddress": "<sky-box ip address from uPnP scan>",
+  "port": 49153
 }

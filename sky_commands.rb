@@ -20,11 +20,11 @@ class SkyCommands
 
   #Send a SOAP packet to the Sky decoder, an print the result to STDOUT
   def send_command(actionName:, serviceType:, argList:, controlURL: )
-    soapBody = 	"<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><u:#{actionName} xmlns:u=\"urn:schemas-nds-com:service:#{serviceType}\">#{argList}</u:#{actionName}></soap:Body></soap:Envelope>"
-		
+    soapBody =  "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><u:#{actionName} xmlns:u=\"urn:schemas-nds-com:service:#{serviceType}\">#{argList}</u:#{actionName}></soap:Body></soap:Envelope>"
+    
     soapHeaders =  { 'Host' => "#{@skyAddress}:#{@port}",
                 'Content-Type' => 'text/xml', 
-        				'SOAPAction' => "\"urn:schemas-nds-com:service:#{serviceType}##{actionName}\""
+                'SOAPAction' => "\"urn:schemas-nds-com:service:#{serviceType}##{actionName}\""
               }
 
     res = Net::HTTP.new(@skyAddress, @port).start do |http|
