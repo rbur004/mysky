@@ -2,14 +2,14 @@
 require_relative 'sky_commands.rb'
 
 sky_cli = SkyCommands.new
+sky_cli.getMediaInfo
+exit 0
 
 #sky_cli.play_recording(uri: "file://pvr/29012F89") #Fails
 #sky_cli.browseRecordTasks #Fails
 #sky_cli.channel(number: 7) #Sky Movies
 #sky_cli.stop
 sky_cli.getTranportationActions
-sky_cli.getMediaInfo
-exit 0
 
 sky_cli.rewind(rate: 30)
 sleep 3
