@@ -20,7 +20,7 @@ class SkyCommands
 
   #Send a SOAP packet to the Sky decoder, an print the result to STDOUT
   def send_command(actionName:, serviceType:, argList:, controlURL: )
-    soapBody =  "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><u:#{actionName} xmlns:u=\"urn:schemas-nds-com:service:#{serviceType}\">#{argList}</u:#{actionName}></soap:Body></soap:Envelope>"
+    soapBody =  "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:#{actionName} xmlns:u=\"urn:schemas-nds-com:service:#{serviceType}\">#{argList}</u:#{actionName}></s:Body></s:Envelope>\0xd\0xa"
     
     soapHeaders =  { 'Host' => "#{@skyAddress}:#{@port}",
                 'Content-Type' => 'text/xml', 
@@ -29,9 +29,7 @@ class SkyCommands
 
     res = Net::HTTP.new(@skyAddress, @port).start do |http|
         url = "/#{@decoder_key}#{controlURL}"
-        post = Net::HTTP::Post.new(url)
-        post.body = soapBody
-        response = http.post(url, post.body, soapHeaders)
+        response = http.post(url, soapBody, soapHeaders)
         puts response.code.to_i
         puts response.body if response.code.to_i == 200
     end
@@ -39,9 +37,9 @@ class SkyCommands
 
   #Doesn't seem to work for files, but does work for channels.
   #Play a recorded programme
-  #  @param name [String] Programme path, as retrieved by getMediaInfo.
+  #  @param uri [String] Programme path, as retrieved by getMediaInfo.
   def setAVTransportURI(uri:, currentURIMetaData: '')
-    if name != nil
+    if uri != nil
       send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>#{uri}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay") 
     end
   end
@@ -49,7 +47,7 @@ class SkyCommands
 
   #Not implemented
   def SetNextAVTransportURI(uri:, nextURIMetaData: '')
-    send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><NextURI>#{uri}</NextURI><NextURIMetaData>#{nextURIMetaData}</NextURIMetaData>", controlURL: "SkyPlay") 
+    send_command( actionName: "SetNextAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><NextURI>#{uri}</NextURI><NextURIMetaData>#{nextURIMetaData}</NextURIMetaData>", controlURL: "SkyPlay") 
   end
 
   #Use the channel hash to map channel names or numbers to the Sky code for that channel.
