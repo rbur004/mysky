@@ -19,6 +19,7 @@ The configuration file defines the Sky box IP address, port (49153), and the box
 
 ## upnp_probe.rb
 Run this to discover your sky boxes IP address and UUID. My box has a fixed IP address, so I only need to run this once. If yours is dynamic, then this step may need to be done more often.
+* Requires 'gem install simple_upnp'
 
 ## mysky_nz_channels.rb
 Is a list of channel names and numbers, and their Sky code (used in SetAVTransportURI). These were obtained by manually changing channel, and running getMediaInfo to get the code from the <CurrentURI>xsi://69</CurrentURI> line (Code here is '69', for channel 7, BBC TV). I didn't get every channel's code, running out of enthusiasm ;)
