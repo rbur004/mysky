@@ -1,14 +1,16 @@
 # mysky
 
-After a network scan, I found my mySky box has a number of ports open. One showed up in a uPnP scan too, so I followed the links in the uPnP output, and got a long list of SOAP XML commands that the sky box said it would respond to. These turn out to be standard AVTransport commands.
+After a network scan, I found my mySky box has a number of ports open. One showed up in a uPnP scan too, so I followed the links in the uPnP output, and got a long list of SOAP XML commands that the sky box said it would respond to. These turn out to be standard AVTransport commands (google AVTransport Service Template).
 
 Many of the commands don't seem to work, giving an HTML 500 error (server error). I might not be calling them correctly. I did get the fallowing to work:
 
-* SetAVTransportURI (Go to a channel (trying to play recorded content gives an HTML 500 error))
-* Speed (play, fast forward, rewind)
-* Pause
-* Stop (Stops playing recorded programmes)
+* getTranportationActions shows only these are valid Play,Stop,Pause, with speeds =-30,-12,-6,-2,1/2,2,6,12,30
+* SetAVTransportURI (Goes to a channel, but trying to play recorded content gives an HTML 500 error)
+* play | rewind | ff (all just calling Play, with a speed)
+* pause
+* stop (Stops playing recorded programmes)
 * getMediaInfo (Useful to build a list of channel codes)
+* getTransportInfo (Current state and speed)
 
 The rest either aren't that useful, or fail. Lots of goodies in there, if I could figure out how to make them work.
 

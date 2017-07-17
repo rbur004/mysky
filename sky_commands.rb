@@ -6,7 +6,7 @@ require_relative 'mysky_nz_channels.rb'
 #Derived from an uPnP scan, which lead to these:
 #    http://#{skyAddress}#{port}/description0.xml
 #    http://#{skyAddress}#{port}/description2.xml
-#Oddly, once they showed up on description3 & 4 instead
+#Oddly, sometimes they show up on description3 & 4 instead
 #
 class SkyCommands
   #Set up the connection. The decoder key is the uuid from a uPnP scan.
@@ -28,15 +28,28 @@ class SkyCommands
               }
 
     res = Net::HTTP.new(@skyAddress, @port).start do |http|
-
         url = "/#{@decoder_key}#{controlURL}"
         post = Net::HTTP::Post.new(url)
         post.body = soapBody
         response = http.post(url, post.body, soapHeaders)
         puts response.code.to_i
         puts response.body if response.code.to_i == 200
-    
     end
+  end
+
+  #Doesn't seem to work for files, but does work for channels.
+  #Play a recorded programme
+  #  @param name [String] Programme path, as retrieved by getMediaInfo.
+  def setAVTransportURI(uri:, currentURIMetaData: '')
+    if name != nil
+      send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>#{uri}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay") 
+    end
+  end
+  alias :play_recording :setAVTransportURI
+
+  #Not implemented
+  def SetNextAVTransportURI(uri:, nextURIMetaData: '')
+    send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><NextURI>#{uri}</NextURI><NextURIMetaData>#{nextURIMetaData}</NextURIMetaData>", controlURL: "SkyPlay") 
   end
 
   #Use the channel hash to map channel names or numbers to the Sky code for that channel.
@@ -47,30 +60,26 @@ class SkyCommands
     channel_code = @channels.find_channel_by_number(number: number) if number != nil
 
     if channel_code != nil
-      send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>xsi://#{channel_code}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay") 
-    end
-  end
-
-  #Doesn't seem to work.
-  #Play a recorded programme
-  #  @param name [String] Programme path, as retrieved by getMediaInfo.
-  def play_recording(name:)
-    if name != nil
-      send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>file://#{name}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay") 
+      play_recording(uri: "xsi://#{channel_code}", currentURIMetaData: '')
     end
   end
 
   #Start playing what ever is on, after a pause, fast forward or reverse
   def play
-    speed(1)
+    speed(rate: 1)
   end
-
+  
+  def rewind(rate:)
+    speed(rate: -rate)
+  end
+  
   #Fast forward or reverse (and normal play)
-  def speed(value)
-   if [-30,-12,-6,-2,1,2,6,12,30,'1/2'].include?(value)
-     send_command( actionName: "Play", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><Speed>#{value}</Speed>", controlURL: "SkyPlay")
+  def speed(rate:)
+   if [-30,-12,-6,-2,1,2,6,12,30,'1/2'].include?(rate)
+     send_command( actionName: "Play", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><Speed>#{rate}</Speed>", controlURL: "SkyPlay")
    end
   end
+  alias :ff :speed
 
   #Pause what ever is playing
   def pause
@@ -81,6 +90,42 @@ class SkyCommands
   def stop
     send_command( actionName: "Stop", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay") 
   end
+
+  #Doesn't work
+  #Convenient action to advance to the next track. This action is functionally equivalent to
+  # Seek(TRACK_NR,CurrentTrackNr+1). This action does not ‘cycle’ back to the first track.
+  def next
+    send_command( actionName: "Next", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay") 
+  end
+
+  #Doesn't work
+  #Convenient action to advance to the previous track. This action is functionally equivalent to
+  #Seek(TRACK_NR,CurrentTrackNr-1) . This action does not ‘cycle’ back to the last track.  
+  def previous
+    send_command( actionName: "Previous", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay") 
+  end
+
+  #Doesn't work
+  #Start seeking through the resource controlled by the specified instance - as fast as possible - 
+  #to the specified target position. Unit value “TRACK_NR” indicates seeking to a particular track number. 
+  #For tape-based media that do not support the notion of track (such as VCRs), Seek(“TRACK_NR”,”1”) is
+  # equivalent to the common “FastReverse” VCR functionality. Special track number ‘0’ is used to indicate the
+  # end of the media, hence, Seek(“TRACK_NR”,”0”) is equivalent to the common “FastForward” VCR functionality.
+  # @param unit [String] TRACK_NR, ABS_TIME, REL_TIME, ABS_COUNT, REL_COUNT, CHANNEL_FREQ, TAPE-INDEX, FRAME
+  # @param target [Numeric]
+  def seek(unit:, target:)
+    send_command( actionName: "Previous", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID><Unit>#{unit}</Unit><Target>#{target}</Target>', controlURL: "SkyPlay") 
+  end
+
+  #Record (Doesn't work)
+  def record
+    send_command( actionName: "Record", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay") 
+  end
+  
+  #Not implemented
+  def setPlayMode(newPlayMode:)
+      send_command( actionName: "SetPlayMode", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><NewPlayMode>#{newPlayMode}<NewPlayMode>", controlURL: "SkyPlay") 
+    end
 
   #Lists recognised actions
   def getTranportationActions
