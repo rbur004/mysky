@@ -86,4 +86,24 @@ class MySky_Channels
    return nil
   end
   
+  def up(current_code:)
+    next_one = false
+    @channel.each do |k,v|
+      if current_code == v[:code]
+        next_one = true
+      elsif next_one
+        return v[:code]
+      end
+    end  
+    return @channel.values[0][:code] #Looped
+  end
+  
+  def down(current_code:)
+    this_one = @channel.values[-1][:code]
+    @channel.each do |k,v|
+      return this_one if current_code == v[:code]
+      this_one = v[:code]
+    end
+  end
 end
+

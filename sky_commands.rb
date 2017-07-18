@@ -31,10 +31,11 @@ class SkyCommands
         url = "/#{@decoder_key}#{controlURL}"
         response = http.post(url, soapBody, soapHeaders)
         puts response.code.to_i
-        puts response.body if response.code.to_i == 200
+        puts response.body #if response.code.to_i == 200
     end
   end
 
+#http://#{skyAddress}#{port}/player_avt.xml
   #Doesn't seem to work for files, but does work for channels.
   #Play a recorded programme
   #  @param uri [String] Programme path, as retrieved by getMediaInfo.
@@ -164,7 +165,7 @@ class SkyCommands
     send_command( actionName: "X_NDS_SetUserPIN", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><UserPIN>#{pin}</UserPIN>", controlURL: "SkyPlay")
   end
 
-  #SkyCM
+#http://#{skyAddress}#{port}/player_cm.xml
   def getProtocolInfo
     send_command(actionName: "GetProtocolInfo", serviceType: 'SkyCM:2', argList: '', controlURL: 'SkyCM')
   end
@@ -177,12 +178,35 @@ class SkyCommands
     send_command(actionName: "GetCurrentConnectionInfo", serviceType: 'SkyCM:2', argList: '<ConnectionID>0</ConnectionID>', controlURL: 'SkyCM')
   end
 
-  #SkyRC
+#http://#{skyAddress}#{port}/player_rc.xml
+  #Returns just a FactoryDefaults preset.
   def listPresets
     send_command(actionName: "ListPresets", serviceType: 'SkyRC:2', argList: '<InstanceID>0</InstanceID>', controlURL: 'SkyRC')
   end
+  
+  #Failed, with 701 error. "TRANSITION NOT AVAILABLE"
+  def selectPreset(presetName:)
+      send_command(actionName: "SelectPreset", serviceType: 'SkyRC:2', argList: '<InstanceID>0</InstanceID><PresetName>#{presetName}</PresetName>', controlURL: 'SkyRC')
+  end
+  
+  #Not implemented
+  def getVolume(channel: 'Master')
+    send_command(actionName: "GetVolume", serviceType: 'SkyRC:2', argList: '<InstanceID>0</InstanceID><Channel>#{channel}<Channel>', controlURL: 'SkyRC')
+  end
 
-  #SkyBook all calls fail with 500
+  #Not implemented
+  def getMute(channel: 'Master')
+    send_command(actionName: "GetMute", serviceType: 'SkyRC:2', argList: '<InstanceID>0</InstanceID><Channel>#{channel}<Channel>', controlURL: 'SkyRC')
+  end
+  
+  #Not implemented
+  def setMute(channel: 'Master', mute: 1)
+    send_command(actionName: "_etMute", serviceType: 'SkyRC:2', argList: '<InstanceID>0</InstanceID><Channel>#{channel}<Channel><DesiredMute>#{mute}</DesiredMute>', controlURL: 'SkyRC')
+  end
+  
+  
+#http://#{skyAddress}#{port}/scm_srs.xml
+#SkyBook all calls fail with 500
   def getBookSortCapabilities
     send_command(actionName: "GetSortCapabilities", serviceType: 'SkyBook:2', argList: '', controlURL: 'SkyBook')
   end
@@ -191,7 +215,7 @@ class SkyCommands
     send_command(actionName: "GetPropertyList", serviceType: 'SkyBook:2', argList: "<DataTypeID>#{dataTypeID}</DataTypeID>", controlURL: 'SkyBook')
   end
 
-  def getAllowedValues(dataTypeID: 0, filter: '')
+  def getAllowedValues(dataTypeID: 0, filter: '*')
     send_command(actionName: "GetAllowedValues", serviceType: 'SkyBook:2', argList: "<DataTypeID>#{dataTypeID}</DataTypeID><Filter>#{filter}</Filter>", controlURL: 'SkyBook')
   end
 
@@ -243,7 +267,8 @@ class SkyCommands
     send_command(actionName: "X_NDS_UnlinkRecordTask", serviceType: 'SkyBook:2', argList: "<RecordTaskID>#recordTaskID</RecordTaskID>", controlURL: 'SkyBook')
   end
 
-  #SkyBrowse (None of these seem to work. Give 500 response, which indicates a server error)
+#http://#{skyAddress}#{port}/scm_cds.xml
+#SkyBrowse (None of these seem to work. Give 500 response, which indicates a server error)
   def getSystemUpdateID
     send_command(actionName: "GetSystemUpdateID", serviceType: 'SkyBrowse:2', argList: '', controlURL: 'SkyBrowse')
   end
