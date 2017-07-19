@@ -1,3 +1,4 @@
+require 'nokogiri'
 require "net/http"
 require 'uri'
 require 'json'
@@ -19,7 +20,7 @@ class SkyCommands
   end
 
   #Send a SOAP packet to the Sky decoder, an print the result to STDOUT
-  def send_command(actionName:, serviceType:, argList:, controlURL: )
+  def send_command(actionName:, serviceType:, argList:, controlURL:, quiet: false )
     soapBody =  "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:#{actionName} xmlns:u=\"urn:schemas-nds-com:service:#{serviceType}\">#{argList}</u:#{actionName}></s:Body></s:Envelope>\0xd\0xa"
     
     soapHeaders =  { 'Host' => "#{@skyAddress}:#{@port}",
@@ -30,8 +31,11 @@ class SkyCommands
     res = Net::HTTP.new(@skyAddress, @port).start do |http|
         url = "/#{@decoder_key}#{controlURL}"
         response = http.post(url, soapBody, soapHeaders)
-        puts response.code.to_i
-        puts response.body #if response.code.to_i == 200
+        if !quiet
+          puts response.code.to_i
+          puts response.body #if response.code.to_i == 200
+        end
+        return response
     end
   end
 
@@ -54,9 +58,10 @@ class SkyCommands
   #Use the channel hash to map channel names or numbers to the Sky code for that channel.
   #  @param name [String] the Sky name for the channel
   #  @param number [Numeric] the Sky channel number
-  def channel(name: nil, number: nil)
+  def channel(name: nil, number: nil, code: nil)
     channel_code = @channels.find_channel_by_name(name: name) if name != nil
     channel_code = @channels.find_channel_by_number(number: number) if number != nil
+    channel_code = code if code != nil
 
     if channel_code != nil
       play_recording(uri: "xsi://#{channel_code}", currentURIMetaData: '')
@@ -140,13 +145,20 @@ class SkyCommands
   end
 
   #Lists details of playing media (only the channel is valid data)
-  def getMediaInfo
-    send_command( actionName: "GetMediaInfo", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay")
+  def getMediaInfo(quiet: false)
+    send_command( actionName: "GetMediaInfo", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay", quiet: quiet)
   end
 
   #Lists details of playing media (only the channel is valid data)
-  def getMediaInfo_Ext
-    send_command( actionName: "GetMediaInfo_Ext", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay")
+  def getMediaInfo_Ext(quiet: false)
+    send_command( actionName: "GetMediaInfo_Ext", serviceType: "SkyPlay:2", argList: '<InstanceID>0</InstanceID>', controlURL: "SkyPlay", quiet: quiet)
+  end
+
+  def current_uri(quiet: true)
+    response = getMediaInfo(quiet: quiet)
+    return nil if response == nil || response.code.to_i != 200
+    xml_root = Nokogiri::XML(response.body)
+    return xml_root.xpath('//CurrentURI').text.strip
   end
 
   def getPositionInfo
