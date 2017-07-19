@@ -7,7 +7,7 @@ class MySky_Channels
       'TV2' => {:channel => 2, :code => '324'},
       'TV3' => {:channel => 3, :code => '323'},
       'Prime' => {:channel => 4, :code => '40D'},
-      'the Box' => {:channel => 5, :code => 'C9'},
+      'The Box' => {:channel => 5, :code => 'C9'},
       'Vibe' => {:channel => 6, :code => '68'},
       'BBC TV' => {:channel => 7, :code => '69'},
       'Jones' => {:channel => 8, :code => 'CB'},
@@ -86,7 +86,16 @@ class MySky_Channels
    return nil
   end
   
+  #Search using partial name. Will find the first match, which may not be what you want :(
+  #  @param name [String] the Sky channel name
+  #  @return [String] Sky channel code
+  def match_channel(name:)
+    @channel.each { |k,v|  return v[:code] if k.downcase =~ /#{name.downcase}/ }
+    return nil
+  end
+  
   def up(current_code:)
+    return current_code if current_code == nil || current_code =~ /^file:/
     next_one = false
     @channel.each do |k,v|
       if current_code == v[:code]
@@ -99,6 +108,7 @@ class MySky_Channels
   end
   
   def down(current_code:)
+    return current_code if current_code == nil || current_code =~ /^file:/
     this_one = @channel.values[-1][:code]
     @channel.each do |k,v|
       return this_one if current_code == v[:code]
