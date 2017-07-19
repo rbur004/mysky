@@ -2,12 +2,18 @@
 require_relative 'sky_commands.rb'
 
 sky_cli = SkyCommands.new
-sky_cli.getMediaInfo
+#sky_cli.getMediaInfo
+#puts
+#puts sky_cli.current_uri
+#puts
+sky_cli.next
+
+
 #sky_cli.getMediaInfo_Ext #No more useful data than getMediaInfo
 #sky_cli.getTransportInfo
 #sky_cli.getTransportSettings
 #sky_cli.getPositionInfo
-sky_cli.listPresets #Only FactoryDefaults.
+#sky_cli.listPresets #Only FactoryDefaults.
 #sky_cli.getTranportationActions #Play,Stop,Pause
 #sky_cli.channel(number: 7) #BBC TV
 #sky_cli.channel(name: 'Prime') #Channel 4
