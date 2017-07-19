@@ -4,10 +4,10 @@ require_relative 'sky_commands.rb'
 sky_cli = SkyCommands.new
 #sky_cli.getMediaInfo
 #puts
-#puts sky_cli.current_uri
-#puts
-sky_cli.next
+sky_cli.getMediaInfo
 
+#puts
+#sky_cli.channel(name: 'Rialto')
 
 #sky_cli.getMediaInfo_Ext #No more useful data than getMediaInfo
 #sky_cli.getTransportInfo
