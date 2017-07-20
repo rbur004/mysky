@@ -45,7 +45,7 @@ class MySky_Channels
       'Sky Box Office 2' => {:channel => 41, :code => '4B2'},
       'Sky Box Office 3' => {:channel => 42, :code => '4B3'},
       'Sky Box Office 4' => {:channel => 43, :code => '4B4'},
-      'Sport Mosaic' => {:channel => 50, :code => '298'},
+      #'Sport Mosaic' => {:channel => 50, :code => '298'}, #Get stuck here, and need remote to exit
       'SKY Sport 1' => {:channel => 51, :code => '191'},
       'Sky Sport 2' => {:channel => 52, :code => '65'},
       'Sky Sport 3' => {:channel => 53, :code => 'CA'},
@@ -96,7 +96,7 @@ class MySky_Channels
       'SCC' => {:channel => 155, :code => 'CD'},
       'SCM' => {:channel => 156, :code => '516'},
       'TFC' => {:channel => 160, :code => '517'},
-      #'Upgrade App' => {:channel => 200, :code => '29B'},
+      #'Upgrade App' => {:channel => 200, :code => '29B'}, #Get stuck here, and need remote to exit
       'Shine TV' => {:channel => 201, :code => '83A'},
       'Daystar' => {:channel => 202, :code => '3EC'},
       'SonLife' => {:channel => 203, :code => '1FF'},
@@ -131,7 +131,8 @@ class MySky_Channels
       'ThreePlus1' => {:channel => 503, :code => '83E'},
       'Bravo PLUS1' => {:channel => 512, :code => '13A'},
       'Prime PLUS1' => {:channel => 514, :code => '138'},
-      'Preview 2' => {:channel => 319, :code => '13F'}
+      'Preview 2' => {:channel => 319, :code => '13F'},
+      'LNB Test' => {:channel => 999, :code => '22C5'}
     }
   end
   
