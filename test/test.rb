@@ -2,19 +2,10 @@
 require_relative '../rlib/sky_commands.rb'
 
 sky_cli = SkyCommands.new
+sky_cli.channel(code: "22C5")
 
-channels = MySky_Channels.new
-(668..5000).each do |i|
-  code = "%X" % i
-  if channels.isvalid?(code: code) == false && code != '29B' #29B is a black hole.
-    response = sky_cli.channel(code: code, quiet: true)
-    if response.code.to_i == 200
-      puts code
-    end
-  end
-  sleep 2
-end
-#sky_cli.getMediaInfo
+
+sky_cli.getMediaInfo
 #puts
 #sky_cli.getMediaInfo
 #sky_cli.channel(code: "324")
