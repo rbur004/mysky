@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'simple_upnp'
+require '../rlib/simple_upnp'
 
 include_location_details = true
 devices = SimpleUpnp::Discovery.search()

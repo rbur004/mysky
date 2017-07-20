@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative 'sky_commands.rb'
+require_relative '../rlib/sky_commands.rb'
 
 sky_cli = SkyCommands.new
 File.open("/tmp/channels","a") do |fd|

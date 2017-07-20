@@ -12,7 +12,7 @@ require_relative 'mysky_nz_channels.rb'
 class SkyCommands
   #Set up the connection. The decoder key is the uuid from a uPnP scan.
   def initialize
-    conf = JSON.parse(File.read("conf.json"))
+    conf = JSON.parse(File.read("../conf/conf.json"))
     @skyAddress = conf['skyAddress']
     @port = conf['port']
     @decoder_key = conf['decoder_key']
@@ -43,10 +43,11 @@ class SkyCommands
   #Doesn't seem to work for files, but does work for channels.
   #Play a recorded programme
   #  @param uri [String] Programme path, as retrieved by getMediaInfo.
-  def setAVTransportURI(uri:, currentURIMetaData: '')
+  def setAVTransportURI(uri:, currentURIMetaData: '', quiet: false)
     if uri != nil
-      send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>#{uri}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay") 
+      return send_command( actionName: "SetAVTransportURI", serviceType: "SkyPlay:2", argList: "<InstanceID>0</InstanceID><CurrentURI>#{uri}</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>", controlURL: "SkyPlay", quiet: quiet) 
     end
+    return nil
   end
   alias :play_recording :setAVTransportURI
 
@@ -58,14 +59,15 @@ class SkyCommands
   #Use the channel hash to map channel names or numbers to the Sky code for that channel.
   #  @param name [String] the Sky name for the channel
   #  @param number [Numeric] the Sky channel number
-  def channel(name: nil, number: nil, code: nil)
+  def channel(name: nil, number: nil, code: nil, quiet: false)
     channel_code = @channels.find_channel_by_name(name: name) if name != nil
     channel_code = @channels.find_channel_by_number(number: number) if number != nil
     channel_code = code if code != nil
 
     if channel_code != nil
-      play_recording(uri: "xsi://#{channel_code}", currentURIMetaData: '')
+      return play_recording(uri: "xsi://#{channel_code}", currentURIMetaData: '', quiet: quiet)
     end
+    return nil
   end
 
   #Start playing what ever is on, after a pause, fast forward or reverse

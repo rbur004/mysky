@@ -131,7 +131,14 @@ class MySky_Channels
       'ThreePlus1' => {:channel => 503, :code => '83E'},
       'Bravo PLUS1' => {:channel => 512, :code => '13A'},
       'Prime PLUS1' => {:channel => 514, :code => '138'},
+      'Preview 2' => {:channel => 319, :code => '13F'}
     }
+  end
+  
+  #Is this a valid code
+  def isvalid?(code:)
+    @channel.each { |k,v|  return true if code == v[:code] }
+    return false
   end
   
   #Search the @channel hosh for the chonnel name given
