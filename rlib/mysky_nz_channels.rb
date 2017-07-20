@@ -85,7 +85,7 @@ class MySky_Channels
       'Disney Channel' => {:channel => 100, :code => '454'},
       'Nickelodeon' => {:channel => 101, :code => '57F'},
       'Cartoon Network' => {:channel => 102, :code => '12E'},
-      'Disney HD' => {:channel => 103, :code => '58A'},
+      'Disney XD' => {:channel => 103, :code => '58A'},
       'Nick Jr.' => {:channel => 104, :code => '57C'},
       'Disney Junior' => {:channel => 105, :code => '199'},
       'SM Disney 2' => {:channel => 107, :code => '26D'},
