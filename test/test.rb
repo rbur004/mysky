@@ -2,12 +2,12 @@
 require_relative '../rlib/sky_commands.rb'
 
 sky_cli = SkyCommands.new
-sky_cli.channel(code: "22C5")
+#sky_cli.channel(code: "22C5")
+#sky_cli.stop
+#sky_cli.channel(name: 'TVNZ 1 HD')
 
-
-sky_cli.getMediaInfo
 #puts
-#sky_cli.getMediaInfo
+sky_cli.getMediaInfo
 #sky_cli.channel(code: "324")
 #sky_cli.getMediaInfo
 
