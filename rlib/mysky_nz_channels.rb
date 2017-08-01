@@ -1,6 +1,7 @@
 #Retrieved with getMediaInfo, after manually changing to each channel.
 #Hence, haven't captured all channels.
 class MySky_Channels  
+  attr_accessor :channel, :skip
   def initialize
     @channel = {
       'preview' => {:channel => 0, :code => '132'},
@@ -10,6 +11,7 @@ class MySky_Channels
       'Prime HD' => {:channel => 4, :code => '40D'},
       'the Box' => {:channel => 5, :code => 'C9'},
       'Vibe' => {:channel => 6, :code => '68'},
+      'Vibe Pop up' => {:channel => 207, :code => '4CF'},
       'BBC UKTV' => {:channel => 7, :code => '69'},
       'Jones!' => {:channel => 8, :code => 'CB'},
       'Jones too' => {:channel => 208, :code => 'D6'},
@@ -37,6 +39,7 @@ class MySky_Channels
       'SM Action' => {:channel => 32, :code => '25E'},
       'SM Greats' => {:channel => 33, :code => 'D0'},
       'SM Classics' => {:channel => 34, :code => '25A'},
+      'SM Pop Up'  => {:channel => 35, :code => '1FC'},
       'SM Family' => {:channel => 36, :code => '206'},
       'SM Disney' => {:channel => 37, :code => '266'},
       'TCM' => {:channel => 38, :code => '519'},
@@ -132,8 +135,14 @@ class MySky_Channels
       'Bravo PLUS1' => {:channel => 512, :code => '13A'},
       'Prime PLUS1' => {:channel => 514, :code => '138'},
       'Preview 2' => {:channel => 319, :code => '13F'},
-      'LNB Test' => {:channel => 999, :code => '22C5'}
+      #'LNB Test' => {:channel => 999, :code => '22C5'}
     }
+    #The following are black holes, and require the remote to exit.
+    #Avoid them in scans.
+    @skip = ["298", # Sport Mosaic
+             "29B", # Upgrade App
+             "22C5" # LNB Test (which doesn't seem to work anyway)
+            ]
   end
   
   #Is this a valid code
